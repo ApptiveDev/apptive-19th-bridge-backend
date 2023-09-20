@@ -34,10 +34,22 @@ public class SecurityConfiguration {
     private final LogoutHandler logoutHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 토큰을 사용하기 때문에 csrf 설정 disable
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // exception handler 설정
+                .exceptionHandling((exceptionHandler) ->
+                        exceptionHandler.authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
+                )
+
+                // 접근 주소별 권한 설정
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers(
                                         "/swagger-resources",
@@ -54,16 +66,21 @@ public class SecurityConfiguration {
                                 .requestMatchers(DELETE, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_DELETE.name(), Permission.CREATOR_DELETE.name())
                                 .anyRequest().authenticated()
                 )
+
+                // session을 사용하지 않기 때문에 STATELESS
                 .sessionManagement((session) ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
+
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) ->
-                        logout.logoutUrl("/api/v1/auth/logout")
+                        logout.logoutUrl("/api/auth/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 )
+
                 .oauth2Login((oauth2Login) ->
                         oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
                                 userInfoEndpointConfig.userService(customOAuth2UserService)));
