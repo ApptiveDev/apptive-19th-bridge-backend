@@ -4,9 +4,10 @@ import apptive.london.bridge.global.auth.local.data.Token;
 import apptive.london.bridge.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,11 +15,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity implements UserDetails {
 
     @Id
@@ -26,12 +29,16 @@ public class User extends BaseEntity implements UserDetails {
     private Long id;
     private String email;
     private String password;
+    private String nickname;
+    private String birthday;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Token> tokens;
+
+    //============ UserDetail Method ============//
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
