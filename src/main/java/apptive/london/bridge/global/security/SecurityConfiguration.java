@@ -1,7 +1,6 @@
 package apptive.london.bridge.global.security;
 
 
-import apptive.london.bridge.domain.user.entity.Permission;
 import apptive.london.bridge.global.auth.social.CustomOAuth2UserService;
 import apptive.london.bridge.global.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
-
 import static apptive.london.bridge.domain.user.entity.Role.ADMIN;
 import static apptive.london.bridge.domain.user.entity.Role.CREATOR;
-import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -59,11 +56,8 @@ public class SecurityConfiguration {
                                         "/api/auth/**",
                                         "/api/oauth/**").permitAll()
 
+                                .requestMatchers("/api/user/convert-to-creator/**").hasAnyRole(ADMIN.name())
                                 .requestMatchers("/api/v1/creator").hasAnyRole(ADMIN.name(), CREATOR.name())
-                                .requestMatchers(GET, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_READ.name(), Permission.CREATOR_READ.name())
-                                .requestMatchers(POST, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_CREATE.name(), Permission.CREATOR_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_UPDATE.name(), Permission.CREATOR_UPDATE.name())
-                                .requestMatchers(DELETE, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_DELETE.name(), Permission.CREATOR_DELETE.name())
                                 .anyRequest().authenticated()
                 )
 
@@ -80,7 +74,6 @@ public class SecurityConfiguration {
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 )
-
                 .oauth2Login((oauth2Login) ->
                         oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
                                 userInfoEndpointConfig.userService(customOAuth2UserService)));
