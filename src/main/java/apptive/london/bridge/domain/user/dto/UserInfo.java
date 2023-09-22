@@ -14,12 +14,15 @@ public class UserInfo {
 
     private Long id;
     private String email;
+    private String nickname;
+    private String birthday;
 
     public static UserInfo fromUser(User user) {
         return UserInfo.builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .nickname(user.getNickname())
+                .birthday(user.getBirthday())
                 .build();
     }
-
 }
