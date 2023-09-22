@@ -28,12 +28,6 @@ public class UserController {
     public ResponseEntity<?> modifyUser(@AuthenticationPrincipal User user, @RequestBody @Valid ModifyUserRequest modifyUserRequest) {
         userService.modifyUser(user, modifyUserRequest);
 
-        return ResponseEntity.ok().build();    }
-
-    @PostMapping("/modify/creator/v1")
-    public ResponseEntity<?> modifyCreator(@AuthenticationPrincipal User user, @RequestBody @Valid ModifyCreatorRequest modifyCreatorRequest) {
-        userService.modifyCreator(user, modifyCreatorRequest);
-
         return ResponseEntity.ok().build();
     }
 

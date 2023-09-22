@@ -3,7 +3,6 @@ package apptive.london.bridge.global.auth.social.kakao.service;
 import apptive.london.bridge.domain.user.entity.Role;
 import apptive.london.bridge.domain.user.entity.User;
 import apptive.london.bridge.domain.user.repositoy.UserRepository;
-import apptive.london.bridge.global.auth.local.data.AuthenticationResponse;
 import apptive.london.bridge.global.auth.local.data.Token;
 import apptive.london.bridge.global.auth.local.data.TokenType;
 import apptive.london.bridge.global.auth.local.repository.TokenRepository;
@@ -79,15 +78,13 @@ public class CustomKakaoService {
     }
 
     public KakaoUserInfo getKakaoInfoByToken(String token) {
-        KakaoUserInfo kakaoUserInfo = webClient.get()
+        return webClient.get()
                 .uri(KAKAO_USER_INFO_URI)
                 .header("Authorization", "Bearer " + token)
                 .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
                 .retrieve()
                 .bodyToMono(KakaoUserInfo.class)
                 .block();
-
-        return kakaoUserInfo;
     }
 
     public KakaoToken getAccessToken(String code) {
