@@ -57,7 +57,7 @@ public class SecurityConfiguration {
                                         "/api/oauth/**").permitAll()
 
                                 .requestMatchers("/api/user/convert-to-creator/**").hasAnyRole(ADMIN.name())
-                                .requestMatchers("/api/v1/creator").hasAnyRole(ADMIN.name(), CREATOR.name())
+                                .requestMatchers("/api/creator").hasAnyRole(ADMIN.name(), CREATOR.name())
                                 .anyRequest().authenticated()
                 )
 
