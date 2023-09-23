@@ -3,10 +3,10 @@ package apptive.london.bridge.global.auth.social.kakao.service;
 import apptive.london.bridge.domain.user.entity.Role;
 import apptive.london.bridge.domain.user.entity.User;
 import apptive.london.bridge.domain.user.repositoy.UserRepository;
-import apptive.london.bridge.global.auth.local.data.AuthenticationResponse;
 import apptive.london.bridge.global.auth.local.data.Token;
 import apptive.london.bridge.global.auth.local.data.TokenType;
 import apptive.london.bridge.global.auth.local.repository.TokenRepository;
+import apptive.london.bridge.global.auth.social.SocialAuthenticationResponse;
 import apptive.london.bridge.global.auth.social.kakao.CustomKakaoOauth;
 import apptive.london.bridge.global.auth.social.kakao.dto.KakaoToken;
 import apptive.london.bridge.global.auth.social.kakao.dto.KakaoUserInfo;
@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,26 +32,28 @@ public class CustomKakaoService {
 
     private final String KAKAO_USER_INFO_URI = "https://kapi.kakao.com/v2/user/me";
 
-    public AuthenticationResponse authenticate(String code) {
-
-        // 카카오로부터 사용자 이메일 얻기
-        KakaoUserInfo kakaoUserInfo = getKakaoInfo(code);
-        String email = kakaoUserInfo.getKakao_account().getEmail();
-
+    public SocialAuthenticationResponse authenticate(String email) {
         // 이메일이 없을때
         if (email == null) {
-            throw new IllegalArgumentException("잘못된 code 입니다.");
+            throw new IllegalArgumentException("카카오 유저 정보를 찾을 수 없습니다.");
         }
 
         // 유저가 존재하지 않으면 생성
-        User user = userRepository.findByEmail(email)
-                .orElse(User.builder()
-                        .email(email)
-                        .password(null)
-                        .role(Role.USER)
-                        .build());
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        user = userRepository.save(user);
+        User user;
+        boolean isRegistered = true;
+        if (optionalUser.isEmpty()) {
+            user = User.builder()
+                    .email(email)
+                    .password(null)
+                    .role(Role.USER)
+                    .build();
+            userRepository.save(user);
+            isRegistered = false;
+        } else {
+            user = optionalUser.get();
+        }
 
         // 토큰 생성
         String jwtToken = jwtService.generateToken(user);
@@ -61,24 +65,26 @@ public class CustomKakaoService {
         // 토큰 저장
         saveUserToken(user, jwtToken);
 
-        return AuthenticationResponse.builder()
+        return SocialAuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .isRegistered(isRegistered)
                 .build();
     }
 
-    public KakaoUserInfo getKakaoInfo(String code) {
+    public KakaoUserInfo getKakaoInfoByCode(String code) {
         KakaoToken token = getAccessToken(code);
+        return getKakaoInfoByToken(token.getAccess_token());
+    }
 
-        KakaoUserInfo kakaoUserInfo = webClient.get()
+    public KakaoUserInfo getKakaoInfoByToken(String token) {
+        return webClient.get()
                 .uri(KAKAO_USER_INFO_URI)
-                .header("Authorization", "Bearer " + token.getAccess_token())
+                .header("Authorization", "Bearer " + token)
                 .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
                 .retrieve()
                 .bodyToMono(KakaoUserInfo.class)
                 .block();
-
-        return kakaoUserInfo;
     }
 
     public KakaoToken getAccessToken(String code) {

@@ -1,7 +1,6 @@
 package apptive.london.bridge.global.security;
 
 
-import apptive.london.bridge.domain.user.entity.Permission;
 import apptive.london.bridge.global.auth.social.CustomOAuth2UserService;
 import apptive.london.bridge.global.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
-
 import static apptive.london.bridge.domain.user.entity.Role.ADMIN;
 import static apptive.london.bridge.domain.user.entity.Role.CREATOR;
-import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -34,10 +31,22 @@ public class SecurityConfiguration {
     private final LogoutHandler logoutHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 토큰을 사용하기 때문에 csrf 설정 disable
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // exception handler 설정
+                .exceptionHandling((exceptionHandler) ->
+                        exceptionHandler.authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
+                )
+
+                // 접근 주소별 권한 설정
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers(
                                         "/swagger-resources",
@@ -47,20 +56,21 @@ public class SecurityConfiguration {
                                         "/api/auth/**",
                                         "/api/oauth/**").permitAll()
 
-                                .requestMatchers("/api/v1/creator").hasAnyRole(ADMIN.name(), CREATOR.name())
-                                .requestMatchers(GET, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_READ.name(), Permission.CREATOR_READ.name())
-                                .requestMatchers(POST, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_CREATE.name(), Permission.CREATOR_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_UPDATE.name(), Permission.CREATOR_UPDATE.name())
-                                .requestMatchers(DELETE, "/api/v1/creator/**").hasAnyAuthority(Permission.ADMIN_DELETE.name(), Permission.CREATOR_DELETE.name())
+                                .requestMatchers("/api/user/convert-to-creator/**").hasAnyRole(ADMIN.name())
+                                .requestMatchers("/api/creator").hasAnyRole(ADMIN.name(), CREATOR.name())
                                 .anyRequest().authenticated()
                 )
+
+                // session을 사용하지 않기 때문에 STATELESS
                 .sessionManagement((session) ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
+
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) ->
-                        logout.logoutUrl("/api/v1/auth/logout")
+                        logout.logoutUrl("/api/auth/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 )
