@@ -9,6 +9,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class CustomApplicationRunner implements ApplicationRunner {
@@ -18,8 +20,15 @@ public class CustomApplicationRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        String email = initAdminUser.getEmail();
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        if (existingUser.isPresent()) {
+            return;
+        }
+
         User user = User.builder()
-                .email(initAdminUser.getEmail())
+                .email(email)
                 .password(passwordEncoder.encode(initAdminUser.getPassword()))
                 .role(Role.ADMIN)
                 .build();
