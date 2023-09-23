@@ -9,6 +9,7 @@ import apptive.london.bridge.global.auth.local.data.AuthenticationRequest;
 import apptive.london.bridge.global.auth.local.data.AuthenticationResponse;
 import apptive.london.bridge.global.auth.local.data.Token;
 import apptive.london.bridge.global.auth.local.data.TokenType;
+import apptive.london.bridge.global.auth.local.exception.EmailAlreadyExistsException;
 import apptive.london.bridge.global.auth.local.repository.TokenRepository;
 import apptive.london.bridge.global.security.jwt.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +37,11 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse register(RegisterRequest request, Role role) {
+        var check = userRepository.findByEmail(request.getEmail());
+        if (check.isPresent()) {
+            throw new EmailAlreadyExistsException("중복된 이메일입니다.");
+        }
+
         var user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
