@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,9 +17,7 @@ public class CreatorInfo {
     private String nickname;
     private String birthday;
 
-    @JsonProperty("creator_name")
-    private String creatorName;
-
+    private String name;
     private String gender;
 
     @JsonProperty("channel_links")
@@ -28,16 +26,19 @@ public class CreatorInfo {
     @JsonProperty("business_email")
     private String businessEmail;
 
+    private LocalDateTime createdDate;
+
     public static CreatorInfo fromCreator(Creator creator) {
         return CreatorInfo.builder()
                 .id(creator.getId())
                 .email(creator.getEmail())
                 .nickname(creator.getNickname())
                 .birthday(creator.getBirthday())
-                .creatorName(creator.getCreatorName())
+                .name(creator.getName())
                 .gender(creator.getGender())
                 .channelLinks(creator.getChannelLinks())
                 .businessEmail(creator.getBusinessEmail())
+                .createdDate(creator.getCreatedDate())
                 .build();
     }
 }

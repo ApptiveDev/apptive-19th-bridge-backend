@@ -11,8 +11,8 @@ public class ModifyCreatorRequest {
     private String nickname;
     private String birthday;
 
-    @JsonProperty("creator_name")
-    private String creatorName;
+    @JsonProperty("name")
+    private String name;
     private String gender;
 
     @JsonProperty("channel_links")

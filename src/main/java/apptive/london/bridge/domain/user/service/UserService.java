@@ -1,19 +1,22 @@
 package apptive.london.bridge.domain.user.service;
 
-import apptive.london.bridge.domain.user.dto.CreatorInfo;
-import apptive.london.bridge.domain.user.dto.ModifyCreatorRequest;
-import apptive.london.bridge.domain.user.dto.ModifyUserRequest;
-import apptive.london.bridge.domain.user.dto.UserInfo;
-import apptive.london.bridge.domain.user.entity.Creator;
-import apptive.london.bridge.domain.user.entity.Role;
-import apptive.london.bridge.domain.user.entity.User;
-import apptive.london.bridge.domain.user.repositoy.CreatorRepository;
-import apptive.london.bridge.domain.user.repositoy.UserRepository;
+import apptive.london.bridge.domain.user.dto.*;
+import apptive.london.bridge.domain.user.entity.*;
+import apptive.london.bridge.domain.user.repository.CreatorRepository;
+import apptive.london.bridge.domain.user.repository.FollowRepository;
+import apptive.london.bridge.domain.user.repository.ProfileImgRepository;
+import apptive.london.bridge.domain.user.repository.UserRepository;
 import apptive.london.bridge.global.error.exception.UserNotFoundException;
+import apptive.london.bridge.global.s3.AwsS3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final CreatorRepository creatorRepository;
+    private final FollowRepository followRepository;
+    private final ProfileImgRepository profileImgRepository;
+    private final AwsS3Uploader awsS3Uploader;
 
     @Transactional(readOnly = true)
     public UserInfo userInfo(User user) {
@@ -35,9 +41,9 @@ public class UserService {
         return CreatorInfo.fromCreator(creator);
     }
 
-    public void modifyUser(User user, ModifyUserRequest modifyUserRequest) {
-        user.setNickname(modifyUserRequest.getNickname());
-        user.setBirthday(modifyUserRequest.getBirthday());
+    public void modifyUser(User user, ModifyUserRequest modifyFanRequest) {
+        user.setNickname(modifyFanRequest.getNickname());
+        user.setBirthday(modifyFanRequest.getBirthday());
         userRepository.save(user);
     }
 

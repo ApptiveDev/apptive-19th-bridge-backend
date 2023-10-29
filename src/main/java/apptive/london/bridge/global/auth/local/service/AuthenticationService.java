@@ -4,7 +4,7 @@ package apptive.london.bridge.global.auth.local.service;
 import apptive.london.bridge.domain.user.entity.Role;
 import apptive.london.bridge.global.auth.local.data.RegisterRequest;
 import apptive.london.bridge.domain.user.entity.User;
-import apptive.london.bridge.domain.user.repositoy.UserRepository;
+import apptive.london.bridge.domain.user.repository.UserRepository;
 import apptive.london.bridge.global.auth.local.data.AuthenticationRequest;
 import apptive.london.bridge.global.auth.local.data.AuthenticationResponse;
 import apptive.london.bridge.global.auth.local.data.Token;
