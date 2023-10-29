@@ -1,8 +1,6 @@
 package apptive.london.bridge.domain.user.controller;
 
-import apptive.london.bridge.domain.user.dto.ModifyCreatorRequest;
-import apptive.london.bridge.domain.user.dto.ModifyUserRequest;
-import apptive.london.bridge.domain.user.dto.UserInfo;
+import apptive.london.bridge.domain.user.dto.*;
 import apptive.london.bridge.domain.user.entity.User;
 import apptive.london.bridge.domain.user.service.UserService;
 import jakarta.validation.Valid;
@@ -10,6 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.ion.IonException;
+
+import java.io.IOException;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/user")
@@ -35,5 +39,18 @@ public class UserController {
     public ResponseEntity<?> converToCreator(@PathVariable String email, @RequestBody @Valid ModifyCreatorRequest modifyCreatorRequest) {
         userService.convertToCreator(email, modifyCreatorRequest);
         return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/profileImgUpload/v1")
+    public ResponseEntity<?> profileImgUpload(@AuthenticationPrincipal User user, @RequestParam("img") MultipartFile multipartFile) throws IOException {
+        userService.accoutProfileImgUpload(user, multipartFile);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/profileImg/v1")
+    public ResponseEntity<UserProfileImg> getProfileImg(@AuthenticationPrincipal User user) {
+        UserProfileImg userProfileImg = userService.getUserProfileImg(user.getId());
+        return ResponseEntity.ok(userProfileImg);
     }
 }
