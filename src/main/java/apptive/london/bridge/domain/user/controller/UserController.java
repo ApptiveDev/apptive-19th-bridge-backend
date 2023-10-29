@@ -42,6 +42,19 @@ public class UserController {
     }
 
 
+    @PostMapping("/follow/{creatorId}/v1")
+    public ResponseEntity<?> followCreator(@AuthenticationPrincipal User user, @PathVariable Long creatorId) {
+        userService.followCreator(user, creatorId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/follow/list/v1")
+    public ResponseEntity<List<UserFollowListResponse.UserFollow>> getFollowList(@AuthenticationPrincipal User user) {
+        List<UserFollowListResponse.UserFollow> userFollowList = userService.getFollowList(user);
+        return ResponseEntity.ok().body(userFollowList);
+    }
+
+
     @PostMapping("/profileImgUpload/v1")
     public ResponseEntity<?> profileImgUpload(@AuthenticationPrincipal User user, @RequestParam("img") MultipartFile multipartFile) throws IOException {
         userService.accoutProfileImgUpload(user, multipartFile);

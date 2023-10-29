@@ -37,24 +37,7 @@ public class CreatorController {
                     )
             }
     )
-    @GetMapping
-    public String get() {
-        return "GET:: creator controller";
-    }
-    @PostMapping
-    public String post() {
-        return "POST:: creator controller";
-    }
-    @PutMapping
-    public String put() {
-        return "PUT:: creator controller";
-    }
 
-    @DeleteMapping
-    public String delete() {
-        return "DELETE:: creator controller";
-    }
-    
     @GetMapping("/myInfo/v1")
     public ResponseEntity<CreatorInfo> getMyInfo(@AuthenticationPrincipal User user) {
         CreatorInfo creatorInfo = userService.creatorInfo(user);
@@ -66,6 +49,6 @@ public class CreatorController {
     public ResponseEntity<?> modifyCreator(@AuthenticationPrincipal User user, @RequestBody @Valid ModifyCreatorRequest modifyCreatorRequest) {
         userService.modifyCreator(user, modifyCreatorRequest);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(null);
     }
 }
