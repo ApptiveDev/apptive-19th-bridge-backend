@@ -60,4 +60,9 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/unFollow/{creatorId}/v1")
+    public ResponseEntity<?> unFollowCreator(@AuthenticationPrincipal User user, @PathVariable Long creatorId) {
+        userService.unFollowCreator(user, creatorId);
+        return ResponseEntity.ok().build();
+    }
 }

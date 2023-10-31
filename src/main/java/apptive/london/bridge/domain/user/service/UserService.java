@@ -94,5 +94,12 @@ public class UserService {
         followRepository.save(follow);
     }
 
+    public void unFollowCreator(User user, Long creatorId) {
+        // creatorId로 creator 조회
+        Creator creator = creatorRepository.findById(creatorId).orElseThrow(() -> new IllegalArgumentException("해당하는 creator가 존재하지 않습니다."));
 
+        Follow follow = followRepository.findByCreatorAndUserId(creator, user.getId());
+
+        followRepository.delete(follow);
+    }
 }
