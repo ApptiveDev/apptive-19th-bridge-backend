@@ -75,4 +75,22 @@ public class CreatorService {
         return new CreatorFollowerListResponse(nonBlockFollowerList);
     }
 
+    public CreatorFollowerListResponse getBlockFollowerList(User user) {
+        Creator creator = creatorRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        List<Follow> follows = followRepository.findBlockByCreator(creator);
+
+        List<CreatorFollowerListResponse.CreatorFollower> nonBlockFollowerList = follows.stream().map(follow ->
+                CreatorFollowerListResponse.CreatorFollower.builder()
+                        .fan_id(follow.getUser().getId())
+                        .fan_nickname(follow.getUser().getNickname())
+                        .profile_img(String.valueOf(follow.getUser().getProfileImg().getUploadFileUrl()))
+                        .build()
+        ).collect(Collectors.toList());
+
+        return new CreatorFollowerListResponse(nonBlockFollowerList);
+
+    }
+
+
 }

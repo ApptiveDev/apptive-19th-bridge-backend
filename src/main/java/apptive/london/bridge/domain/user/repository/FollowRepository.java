@@ -22,4 +22,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     @Query("SELECT f FROM Follow f JOIN FETCH f.user u LEFT JOIN FETCH u.profileImg WHERE f.creator = :creator AND f.blockStatus = false")
     List<Follow> findNonBlockByCreator(@Param("creator") Creator creator);
 
+    @Query("SELECT f FROM Follow f JOIN FETCH f.user u LEFT JOIN FETCH u.profileImg WHERE f.creator = :creator AND f.blockStatus = true")
+    List<Follow> findBlockByCreator(@Param("creator") Creator creator);
 }

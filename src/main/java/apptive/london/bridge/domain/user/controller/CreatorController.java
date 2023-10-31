@@ -68,4 +68,11 @@ public class CreatorController {
 
         return ResponseEntity.ok(creatornonBlockFollowerList);
     }
+
+    @GetMapping("/follower/list/block/v1")
+    public ResponseEntity<CreatorFollowerListResponse> getBlockFollowerList(@AuthenticationPrincipal User user) {
+        CreatorFollowerListResponse creatorBlockFollowerList = creatorService.getBlockFollowerList(user);
+
+        return ResponseEntity.ok(creatorBlockFollowerList);
+    }
 }
