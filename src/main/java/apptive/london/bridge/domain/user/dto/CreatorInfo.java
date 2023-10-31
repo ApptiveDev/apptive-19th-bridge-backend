@@ -16,7 +16,6 @@ public class CreatorInfo {
     private String email;
     private String nickname;
     private String birthday;
-
     private String name;
     private String gender;
 
@@ -25,6 +24,9 @@ public class CreatorInfo {
 
     @JsonProperty("business_email")
     private String businessEmail;
+
+    @JsonProperty("profile_img")
+    private String profileImg;
 
     private LocalDateTime createdDate;
 
@@ -38,6 +40,7 @@ public class CreatorInfo {
                 .gender(creator.getGender())
                 .channelLinks(creator.getChannelLinks())
                 .businessEmail(creator.getBusinessEmail())
+                .profileImg(creator.getProfileImg().getUploadFileUrl())
                 .createdDate(creator.getCreatedDate())
                 .build();
     }

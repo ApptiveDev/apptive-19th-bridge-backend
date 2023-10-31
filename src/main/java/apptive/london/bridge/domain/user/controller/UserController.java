@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/convert-to-creator/{email}/v1")
-    public ResponseEntity<?> converToCreator(@PathVariable String email, @RequestBody @Valid ModifyCreatorRequest modifyCreatorRequest) {
+    public ResponseEntity<?> convertToCreator(@PathVariable String email, @RequestBody @Valid ModifyCreatorRequest modifyCreatorRequest) {
         userService.convertToCreator(email, modifyCreatorRequest);
         return ResponseEntity.ok().build();
     }
