@@ -63,7 +63,6 @@ public class UserService {
         creatorRepository.save(creator);
     }
 
-
     public void accoutProfileImgUpload(User user, MultipartFile multipartFile) throws IOException {
         // 기존 이미지 삭제
         user.deleteProfileImage(awsS3Uploader);
@@ -80,5 +79,20 @@ public class UserService {
         User user = userRepository.findWithProfileImgById(userId).orElseThrow(IllegalArgumentException::new);
         return new UserProfileImg(user.getProfileImg().getUploadFileUrl());
     }
+
+    public void followCreator(User user, Long creatorId) {
+        // creatorId로 creator 조회
+        Creator creator = creatorRepository.findById(creatorId).orElseThrow(() -> new IllegalArgumentException("해당하는 creator가 존재하지 않습니다."));
+
+        // Follow 생성
+        Follow follow = Follow.builder()
+                .user(user)
+                .creator(creator)
+                .build();
+
+        // Follow 저장
+        followRepository.save(follow);
+    }
+
 
 }

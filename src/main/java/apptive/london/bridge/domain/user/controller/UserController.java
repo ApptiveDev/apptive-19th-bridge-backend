@@ -41,6 +41,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+
     @PostMapping("/profileImgUpload/v1")
     public ResponseEntity<?> profileImgUpload(@AuthenticationPrincipal User user, @RequestParam("img") MultipartFile multipartFile) throws IOException {
         userService.accoutProfileImgUpload(user, multipartFile);
@@ -52,4 +53,11 @@ public class UserController {
         UserProfileImg userProfileImg = userService.getUserProfileImg(user.getId());
         return ResponseEntity.ok(userProfileImg);
     }
+
+    @PostMapping("/follow/{creatorId}/v1")
+    public ResponseEntity<?> followCreator(@AuthenticationPrincipal User user, @PathVariable Long creatorId) {
+        userService.followCreator(user, creatorId);
+        return ResponseEntity.ok().build();
+    }
+
 }
