@@ -64,4 +64,15 @@ public class UserService {
     }
 
 
+    public void accoutProfileImgUpload(User user, MultipartFile multipartFile) throws IOException {
+        // 기존 이미지 삭제
+        user.deleteProfileImage(awsS3Uploader);
+
+        // profileImg 생성
+        ProfileImg profileImg = user.uploadProfileImage(multipartFile, awsS3Uploader);
+        profileImgRepository.save(profileImg);
+
+        // user 수정 반영
+        userRepository.save(user);
+    }
 }
