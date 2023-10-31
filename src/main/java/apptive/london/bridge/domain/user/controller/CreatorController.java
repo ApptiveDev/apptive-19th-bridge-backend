@@ -1,19 +1,22 @@
 package apptive.london.bridge.domain.user.controller;
 
+import apptive.london.bridge.domain.user.dto.CreatorFollowerListResponse;
 import apptive.london.bridge.domain.user.dto.CreatorInfo;
 import apptive.london.bridge.domain.user.dto.ModifyCreatorRequest;
 import apptive.london.bridge.domain.user.entity.Creator;
 import apptive.london.bridge.domain.user.entity.User;
+import apptive.london.bridge.domain.user.service.CreatorService;
 import apptive.london.bridge.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/creator")
@@ -21,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CreatorController {
 
-    private final UserService userService;
+    private final CreatorService creatorService;
 
     @Operation(
             description = "Get endpoint for manager",
@@ -39,16 +42,25 @@ public class CreatorController {
     )
 
     @GetMapping("/myInfo/v1")
-    public ResponseEntity<CreatorInfo> getMyInfo(@AuthenticationPrincipal User user) {
-        CreatorInfo creatorInfo = userService.creatorInfo(user);
+    public ResponseEntity<CreatorInfo> getMyInfo(@AuthenticationPrincipal Creator creator) {
+        CreatorInfo creatorInfo = creatorService.creatorInfo(creator);
 
         return ResponseEntity.ok(creatorInfo);
     }
 
     @PostMapping("/modify/v1")
     public ResponseEntity<?> modifyCreator(@AuthenticationPrincipal User user, @RequestBody @Valid ModifyCreatorRequest modifyCreatorRequest) {
-        userService.modifyCreator(user, modifyCreatorRequest);
+        creatorService.modifyCreator(user, modifyCreatorRequest);
 
         return ResponseEntity.ok(null);
+    }
+
+
+
+    @GetMapping("/follower/list/v1")
+    public ResponseEntity<CreatorFollowerListResponse> getFollowerList(@AuthenticationPrincipal User user) {
+        CreatorFollowerListResponse creatorFollowerList = creatorService.getFollowerList(user);
+
+        return ResponseEntity.ok(creatorFollowerList);
     }
 }
