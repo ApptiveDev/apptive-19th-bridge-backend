@@ -89,8 +89,11 @@ public class CreatorService {
         ).collect(Collectors.toList());
 
         return new CreatorFollowerListResponse(nonBlockFollowerList);
-
     }
 
-
+    public void blockUser(Creator creator, Long userId) {
+        Follow follow = followRepository.findByCreatorAndUserId(creator, userId);
+        follow.setBlockStatus(true);
+        followRepository.save(follow);
+    }
 }

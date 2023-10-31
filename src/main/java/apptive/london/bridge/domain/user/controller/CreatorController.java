@@ -75,4 +75,12 @@ public class CreatorController {
 
         return ResponseEntity.ok(creatorBlockFollowerList);
     }
+
+    @PostMapping("/block/{userId}/v1")
+    public ResponseEntity<?> blockUser(@AuthenticationPrincipal Creator creator, @PathVariable Long userId) {
+        creatorService.blockUser(creator, userId);
+
+        return ResponseEntity.ok().build();
+    }
+
 }
