@@ -6,7 +6,6 @@ import apptive.london.bridge.domain.user.dto.ModifyCreatorRequest;
 import apptive.london.bridge.domain.user.entity.Creator;
 import apptive.london.bridge.domain.user.entity.User;
 import apptive.london.bridge.domain.user.service.CreatorService;
-import apptive.london.bridge.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
