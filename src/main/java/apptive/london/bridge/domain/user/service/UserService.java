@@ -75,4 +75,10 @@ public class UserService {
         // user 수정 반영
         userRepository.save(user);
     }
+
+    public UserProfileImg getUserProfileImg(Long userId) {
+        User user = userRepository.findWithProfileImgById(userId).orElseThrow(IllegalArgumentException::new);
+        return new UserProfileImg(user.getProfileImg().getUploadFileUrl());
+    }
+
 }

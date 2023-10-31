@@ -46,4 +46,10 @@ public class UserController {
         userService.accoutProfileImgUpload(user, multipartFile);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/profileImg/v1")
+    public ResponseEntity<UserProfileImg> getProfileImg(@AuthenticationPrincipal User user) {
+        UserProfileImg userProfileImg = userService.getUserProfileImg(user.getId());
+        return ResponseEntity.ok(userProfileImg);
+    }
 }
