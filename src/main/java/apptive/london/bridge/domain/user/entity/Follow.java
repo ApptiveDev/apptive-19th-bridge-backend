@@ -30,6 +30,8 @@ public class Follow extends BaseEntity {
     @NotNull
     private Creator creator;
 
+    @Builder.Default
+    private Boolean blockStatus = false;
 }
 
 

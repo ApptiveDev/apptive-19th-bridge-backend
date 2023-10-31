@@ -24,13 +24,15 @@ public class Creator extends User {
     private List<String> channelLinks = new ArrayList<>();
 
     private String businessEmail;
-    private Boolean callStatus;
+
+    @Builder.Default
+    private Boolean callStatus = false;
 
     public Creator() {
         super();
     }
 
-    public static Creator fromUser(User user, String name, String gender, List<String> channelLinks, String businessEmail, Long followerCount) {
+    public static Creator fromUser(User user, String name, String gender, List<String> channelLinks, String businessEmail) {
         return Creator.builder()
                 .email(user.getEmail())
                 .password(user.getPassword())
