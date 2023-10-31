@@ -96,4 +96,10 @@ public class CreatorService {
         follow.setBlockStatus(true);
         followRepository.save(follow);
     }
+
+    public void unBlockUser(Creator creator, Long userId) {
+        Follow follow = followRepository.findByCreatorAndUserId(creator, userId);
+        follow.setBlockStatus(false);
+        followRepository.save(follow);
+    }
 }

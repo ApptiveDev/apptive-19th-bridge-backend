@@ -83,4 +83,10 @@ public class CreatorController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/unBlock/{userId}/v1")
+    public ResponseEntity<?> unBlockUser(@AuthenticationPrincipal Creator creator, @PathVariable Long userId) {
+        creatorService.unBlockUser(creator, userId);
+
+        return ResponseEntity.ok().build();
+    }
 }
