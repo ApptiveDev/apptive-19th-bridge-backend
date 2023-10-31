@@ -33,48 +33,35 @@ public class UserService {
         return UserInfo.fromUser(user);
     }
 
-    @Transactional(readOnly = true)
-    public CreatorInfo creatorInfo(User user) {
-        Creator creator = creatorRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("회원정보를 찾을 수 없습니다."));
-        Hibernate.initialize(creator.getChannelLinks());
-
-        return CreatorInfo.fromCreator(creator);
-    }
-
     public void modifyUser(User user, ModifyUserRequest modifyFanRequest) {
         user.setNickname(modifyFanRequest.getNickname());
         user.setBirthday(modifyFanRequest.getBirthday());
         userRepository.save(user);
     }
 
-    public void modifyCreator(User user, ModifyCreatorRequest modifyCreatorRequest) {
-        Creator creator = (Creator) user;
-        creator.setNickname(modifyCreatorRequest.getNickname());
-        creator.setBirthday(modifyCreatorRequest.getBirthday());
-        creator.setCreatorName(modifyCreatorRequest.getCreatorName());
-        creator.setGender(modifyCreatorRequest.getGender());
-        creator.setChannelLinks(modifyCreatorRequest.getChannelLinks());
-        creator.setBusinessEmail(modifyCreatorRequest.getBusinessEmail());
-        creatorRepository.save(creator);
-    }
-
-
     public void convertToCreator(String email, ModifyCreatorRequest modifyCreatorRequest) {
+        // email로 user 조회
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당하는 user가 존재하지 않습니다."));
 
+        // user -> creator
         Creator creator = Creator.builder()
                 .email(email)
                 .password(user.getPassword())
                 .nickname(modifyCreatorRequest.getNickname())
                 .birthday(modifyCreatorRequest.getBirthday())
                 .gender(modifyCreatorRequest.getGender())
-                .creatorName(modifyCreatorRequest.getCreatorName())
+                .name(modifyCreatorRequest.getName())
                 .channelLinks(modifyCreatorRequest.getChannelLinks())
                 .businessEmail(modifyCreatorRequest.getBusinessEmail())
                 .role(Role.CREATOR)
                 .build();
 
+        // user 삭제
         userRepository.delete(user);
+
+        // creator 저장
         creatorRepository.save(creator);
     }
+
+
 }
