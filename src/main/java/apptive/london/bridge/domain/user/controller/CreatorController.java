@@ -55,12 +55,17 @@ public class CreatorController {
         return ResponseEntity.ok(null);
     }
 
-
-
     @GetMapping("/follower/list/v1")
     public ResponseEntity<CreatorFollowerListResponse> getFollowerList(@AuthenticationPrincipal User user) {
         CreatorFollowerListResponse creatorFollowerList = creatorService.getFollowerList(user);
 
         return ResponseEntity.ok(creatorFollowerList);
+    }
+
+    @GetMapping("/follower/list/nonBlock/v1")
+    public ResponseEntity<CreatorFollowerListResponse> getNonBlockFollowerList(@AuthenticationPrincipal User user) {
+        CreatorFollowerListResponse creatornonBlockFollowerList = creatorService.getNonBlockFollowerList(user);
+
+        return ResponseEntity.ok(creatornonBlockFollowerList);
     }
 }
