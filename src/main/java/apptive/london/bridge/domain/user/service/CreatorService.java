@@ -52,7 +52,7 @@ public class CreatorService {
                 CreatorFollowerListResponse.CreatorFollower.builder()
                         .fan_id(follow.getUser().getId())
                         .fan_nickname(follow.getUser().getNickname())
-                        .profile_img(String.valueOf(follow.getUser().getProfileImg().getUploadFileUrl()))
+                        .profile_img(follow.getUser().getProfileImg().getUploadFileUrl())
                         .build()
         ).collect(Collectors.toList());
 
@@ -68,7 +68,7 @@ public class CreatorService {
                 CreatorFollowerListResponse.CreatorFollower.builder()
                         .fan_id(follow.getUser().getId())
                         .fan_nickname(follow.getUser().getNickname())
-                        .profile_img(String.valueOf(follow.getUser().getProfileImg().getUploadFileUrl()))
+                        .profile_img(follow.getUser().getProfileImg().getUploadFileUrl())
                         .build()
         ).collect(Collectors.toList());
 
@@ -84,7 +84,7 @@ public class CreatorService {
                 CreatorFollowerListResponse.CreatorFollower.builder()
                         .fan_id(follow.getUser().getId())
                         .fan_nickname(follow.getUser().getNickname())
-                        .profile_img(String.valueOf(follow.getUser().getProfileImg().getUploadFileUrl()))
+                        .profile_img(follow.getUser().getProfileImg().getUploadFileUrl())
                         .build()
         ).collect(Collectors.toList());
 
