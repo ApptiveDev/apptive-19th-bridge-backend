@@ -65,4 +65,10 @@ public class UserController {
         userService.unFollowCreator(user, creatorId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/follow/list/v1")
+    public ResponseEntity<UserFollowListResponse> getFollowList(@AuthenticationPrincipal User user) {
+        UserFollowListResponse userFollowList = userService.getFollowList(user);
+        return ResponseEntity.ok(userFollowList);
+    }
 }

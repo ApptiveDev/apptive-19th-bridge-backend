@@ -102,4 +102,21 @@ public class UserService {
 
         followRepository.delete(follow);
     }
+
+    public UserFollowListResponse getFollowList(User user) {
+
+        List<Follow> follows = followRepository.findByUserWithCreatorAndProfileImg(user);
+
+        List<UserFollowListResponse.UserFollow> followList = follows.stream().map(follow ->
+                UserFollowListResponse.UserFollow.builder()
+                        .creator_id(follow.getCreator().getId())
+                        .creator_name(follow.getCreator().getNickname())
+                        .profile_img(String.valueOf(follow.getCreator().getProfileImg().getUploadFileUrl()))
+                        .follower_count(followRepository.findByCreatorWithUserAndProfileImg(follow.getCreator()).size())
+                        .call_status(follow.getCreator().getCallStatus())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return new UserFollowListResponse(followList);
+    }
 }

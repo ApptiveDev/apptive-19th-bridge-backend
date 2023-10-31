@@ -13,4 +13,11 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     Follow findByCreatorAndUserId(Creator creator, Long userId);
 
+    @Query("SELECT f FROM Follow f JOIN FETCH f.creator c LEFT JOIN FETCH c.profileImg WHERE f.user = :user")
+    List<Follow> findByUserWithCreatorAndProfileImg(@Param("user") User user);
+
+    @Query("SELECT f FROM Follow f JOIN FETCH f.user u LEFT JOIN FETCH u.profileImg WHERE f.creator = :creator")
+    List<Follow> findByCreatorWithUserAndProfileImg(@Param("creator") Creator creator);
+
+
 }
