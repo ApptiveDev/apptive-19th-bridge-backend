@@ -2,15 +2,16 @@ package apptive.london.bridge.domain.user.entity;
 
 import apptive.london.bridge.global.auth.local.data.Token;
 import apptive.london.bridge.global.common.BaseEntity;
+import apptive.london.bridge.global.s3.AwsS3Uploader;
+import apptive.london.bridge.global.s3.FileInfo;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +38,10 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Token> tokens;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_img_id")
+    private ProfileImg profileImg;
 
     //============ UserDetail Method ============//
 
@@ -73,5 +78,18 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public ProfileImg uploadProfileImage(MultipartFile multipartFile, AwsS3Uploader awsS3UpLoader) throws IOException {
+        FileInfo fileInfo = awsS3UpLoader.upload(multipartFile, this.getEmail());
+        this.profileImg = ProfileImg.of(fileInfo);
+        return this.profileImg;
+    }
+
+    public void deleteProfileImage(AwsS3Uploader awsS3Uploader) {
+        if (this.profileImg != null) {
+            awsS3Uploader.delete(this.profileImg.getUploadFileName());
+        }
+        this.profileImg = null;
     }
 }

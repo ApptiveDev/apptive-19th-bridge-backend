@@ -2,7 +2,7 @@ package apptive.london.bridge.global.auth.social.kakao.service;
 
 import apptive.london.bridge.domain.user.entity.Role;
 import apptive.london.bridge.domain.user.entity.User;
-import apptive.london.bridge.domain.user.repositoy.UserRepository;
+import apptive.london.bridge.domain.user.repository.UserRepository;
 import apptive.london.bridge.global.auth.local.data.Token;
 import apptive.london.bridge.global.auth.local.data.TokenType;
 import apptive.london.bridge.global.auth.local.repository.TokenRepository;

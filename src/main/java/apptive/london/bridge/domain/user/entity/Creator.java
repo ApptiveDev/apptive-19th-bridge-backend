@@ -15,8 +15,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 public class Creator extends User {
-    private String creatorName;
+    private String name;
     private String gender;
+
 
     @ElementCollection
     @Builder.Default
@@ -24,18 +25,22 @@ public class Creator extends User {
 
     private String businessEmail;
 
+    @Builder.Default
+    private Boolean callStatus = false;
+
     public Creator() {
         super();
     }
 
-    public static Creator fromUser(User user, String creatorName, String gender, List<String> channelLinks, String businessEmail) {
+    public static Creator fromUser(User user, String name, String gender, List<String> channelLinks, String businessEmail) {
         return Creator.builder()
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .nickname(user.getNickname())
                 .birthday(user.getBirthday())
+                .createdDate(user.getCreatedDate())
                 .role(Role.CREATOR)
-                .creatorName(creatorName)
+                .name(name)
                 .gender(gender)
                 .channelLinks(channelLinks)
                 .businessEmail(businessEmail)

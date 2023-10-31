@@ -1,19 +1,21 @@
 package apptive.london.bridge.domain.user.controller;
 
+import apptive.london.bridge.domain.user.dto.CreatorFollowerListResponse;
 import apptive.london.bridge.domain.user.dto.CreatorInfo;
 import apptive.london.bridge.domain.user.dto.ModifyCreatorRequest;
 import apptive.london.bridge.domain.user.entity.Creator;
 import apptive.london.bridge.domain.user.entity.User;
-import apptive.london.bridge.domain.user.service.UserService;
+import apptive.london.bridge.domain.user.service.CreatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/creator")
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CreatorController {
 
-    private final UserService userService;
+    private final CreatorService creatorService;
 
     @Operation(
             description = "Get endpoint for manager",
@@ -37,34 +39,52 @@ public class CreatorController {
                     )
             }
     )
-    @GetMapping
-    public String get() {
-        return "GET:: creator controller";
-    }
-    @PostMapping
-    public String post() {
-        return "POST:: creator controller";
-    }
-    @PutMapping
-    public String put() {
-        return "PUT:: creator controller";
-    }
 
-    @DeleteMapping
-    public String delete() {
-        return "DELETE:: creator controller";
-    }
-    
     @GetMapping("/myInfo/v1")
-    public ResponseEntity<CreatorInfo> getMyInfo(@AuthenticationPrincipal User user) {
-        CreatorInfo creatorInfo = userService.creatorInfo(user);
+    public ResponseEntity<CreatorInfo> getMyInfo(@AuthenticationPrincipal Creator creator) {
+        CreatorInfo creatorInfo = creatorService.creatorInfo(creator);
 
         return ResponseEntity.ok(creatorInfo);
     }
 
     @PostMapping("/modify/v1")
     public ResponseEntity<?> modifyCreator(@AuthenticationPrincipal User user, @RequestBody @Valid ModifyCreatorRequest modifyCreatorRequest) {
-        userService.modifyCreator(user, modifyCreatorRequest);
+        creatorService.modifyCreator(user, modifyCreatorRequest);
+
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/follower/list/v1")
+    public ResponseEntity<CreatorFollowerListResponse> getFollowerList(@AuthenticationPrincipal User user) {
+        CreatorFollowerListResponse creatorFollowerList = creatorService.getFollowerList(user);
+
+        return ResponseEntity.ok(creatorFollowerList);
+    }
+
+    @GetMapping("/follower/list/nonBlock/v1")
+    public ResponseEntity<CreatorFollowerListResponse> getNonBlockFollowerList(@AuthenticationPrincipal User user) {
+        CreatorFollowerListResponse creatornonBlockFollowerList = creatorService.getNonBlockFollowerList(user);
+
+        return ResponseEntity.ok(creatornonBlockFollowerList);
+    }
+
+    @GetMapping("/follower/list/block/v1")
+    public ResponseEntity<CreatorFollowerListResponse> getBlockFollowerList(@AuthenticationPrincipal User user) {
+        CreatorFollowerListResponse creatorBlockFollowerList = creatorService.getBlockFollowerList(user);
+
+        return ResponseEntity.ok(creatorBlockFollowerList);
+    }
+
+    @PostMapping("/block/{userId}/v1")
+    public ResponseEntity<?> blockUser(@AuthenticationPrincipal Creator creator, @PathVariable Long userId) {
+        creatorService.blockUser(creator, userId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/unBlock/{userId}/v1")
+    public ResponseEntity<?> unBlockUser(@AuthenticationPrincipal Creator creator, @PathVariable Long userId) {
+        creatorService.unBlockUser(creator, userId);
 
         return ResponseEntity.ok().build();
     }

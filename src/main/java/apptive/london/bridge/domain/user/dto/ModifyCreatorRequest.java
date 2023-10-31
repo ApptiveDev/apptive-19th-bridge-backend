@@ -10,9 +10,7 @@ import java.util.List;
 public class ModifyCreatorRequest {
     private String nickname;
     private String birthday;
-
-    @JsonProperty("creator_name")
-    private String creatorName;
+    private String name;
     private String gender;
 
     @JsonProperty("channel_links")

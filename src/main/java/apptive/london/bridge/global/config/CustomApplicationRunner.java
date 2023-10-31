@@ -2,7 +2,7 @@ package apptive.london.bridge.global.config;
 
 import apptive.london.bridge.domain.user.entity.Role;
 import apptive.london.bridge.domain.user.entity.User;
-import apptive.london.bridge.domain.user.repositoy.UserRepository;
+import apptive.london.bridge.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

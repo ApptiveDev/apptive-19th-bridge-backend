@@ -2,7 +2,7 @@ package apptive.london.bridge.global.auth.social;
 
 import apptive.london.bridge.domain.user.entity.Role;
 import apptive.london.bridge.domain.user.entity.User;
-import apptive.london.bridge.domain.user.repositoy.UserRepository;
+import apptive.london.bridge.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.Map;
 
 @Service
 @Transactional
