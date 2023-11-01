@@ -16,6 +16,7 @@ public class UserInfo {
     private String email;
     private String nickname;
     private String birthday;
+    private String profile_img;
 
     public static UserInfo fromUser(User user) {
         return UserInfo.builder()
@@ -23,6 +24,8 @@ public class UserInfo {
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .birthday(user.getBirthday())
+                .profile_img(user.getProfileImg().getUploadFileUrl())
                 .build();
+
     }
 }

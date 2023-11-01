@@ -28,7 +28,8 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserInfo userInfo(User user) {
-        return UserInfo.fromUser(user);
+        User userWithProfileImg = userRepository.findWithProfileImgById(user.getId()).get();
+        return UserInfo.fromUser(userWithProfileImg);
     }
 
     public void modifyUser(User user, ModifyUserRequest modifyFanRequest) {
@@ -109,7 +110,7 @@ public class UserService {
                 UserFollowListResponse.UserFollow.builder()
                         .creator_id(follow.getCreator().getId())
                         .creator_name(follow.getCreator().getNickname())
-                        .profile_img(String.valueOf(follow.getCreator().getProfileImg().getUploadFileUrl()))
+                        .profile_img(follow.getCreator().getProfileImg().getUploadFileUrl())
                         .follower_count(followRepository.findByCreatorWithUserAndProfileImg(follow.getCreator()).size())
                         .call_status(follow.getCreator().getCallStatus())
                         .build()

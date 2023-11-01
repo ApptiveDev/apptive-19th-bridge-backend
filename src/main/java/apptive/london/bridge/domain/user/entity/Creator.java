@@ -32,18 +32,20 @@ public class Creator extends User {
         super();
     }
 
-    public static Creator fromUser(User user, String name, String gender, List<String> channelLinks, String businessEmail) {
+    public static Creator fromUser(User user, String name, String gender, List<String> channelLinks, String businessEmail, Boolean callStatus) {
         return Creator.builder()
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .nickname(user.getNickname())
                 .birthday(user.getBirthday())
+                .profileImg(user.getProfileImg())
                 .createdDate(user.getCreatedDate())
                 .role(Role.CREATOR)
                 .name(name)
                 .gender(gender)
                 .channelLinks(channelLinks)
                 .businessEmail(businessEmail)
+                .callStatus(callStatus)
                 .build();
     }
 }

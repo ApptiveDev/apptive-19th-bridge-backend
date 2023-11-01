@@ -8,6 +8,7 @@ import apptive.london.bridge.domain.user.entity.Follow;
 import apptive.london.bridge.domain.user.entity.User;
 import apptive.london.bridge.domain.user.repository.CreatorRepository;
 import apptive.london.bridge.domain.user.repository.FollowRepository;
+import apptive.london.bridge.domain.user.repository.UserRepository;
 import apptive.london.bridge.global.error.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class CreatorService {
+    private final UserRepository userRepository;
     private final CreatorRepository creatorRepository;
     private final FollowRepository followRepository;
 
