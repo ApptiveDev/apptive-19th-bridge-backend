@@ -1,5 +1,6 @@
 package apptive.london.bridge.global.error;
 
+import apptive.london.bridge.global.error.exception.CustomException;
 import apptive.london.bridge.global.error.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,5 +18,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handlerUserNotFoundException(UserNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handlerCustomException(CustomException e) {
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getHttpStatus());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handler(Exception e) {
+        return new ResponseEntity<>(new ErrorResponse("예기치 못한 서버 오류가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
