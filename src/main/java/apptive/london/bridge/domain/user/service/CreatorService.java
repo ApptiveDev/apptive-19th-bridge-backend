@@ -54,7 +54,7 @@ public class CreatorService {
                 CreatorFollowerListResponse.CreatorFollower.builder()
                         .fan_id(follow.getUser().getId())
                         .fan_nickname(follow.getUser().getNickname())
-                        .profile_img(follow.getUser().getProfileImg().getUploadFileUrl())
+                        .profile_img(follow.getUser().getProfileImgUrl())
                         .build()
         ).collect(Collectors.toList());
 
@@ -70,7 +70,7 @@ public class CreatorService {
                 CreatorFollowerListResponse.CreatorFollower.builder()
                         .fan_id(follow.getUser().getId())
                         .fan_nickname(follow.getUser().getNickname())
-                        .profile_img(follow.getUser().getProfileImg().getUploadFileUrl())
+                        .profile_img(follow.getUser().getProfileImgUrl())
                         .build()
         ).collect(Collectors.toList());
 
@@ -86,7 +86,7 @@ public class CreatorService {
                 CreatorFollowerListResponse.CreatorFollower.builder()
                         .fan_id(follow.getUser().getId())
                         .fan_nickname(follow.getUser().getNickname())
-                        .profile_img(follow.getUser().getProfileImg().getUploadFileUrl())
+                        .profile_img(follow.getUser().getProfileImgUrl())
                         .build()
         ).collect(Collectors.toList());
 
@@ -94,13 +94,13 @@ public class CreatorService {
     }
 
     public void blockUser(Creator creator, Long userId) {
-        Follow follow = followRepository.findByCreatorAndUserId(creator, userId);
+        Follow follow = followRepository.findByCreatorAndUserId(creator, userId).orElseThrow(RuntimeException::new);
         follow.setBlockStatus(true);
         followRepository.save(follow);
     }
 
     public void unBlockUser(Creator creator, Long userId) {
-        Follow follow = followRepository.findByCreatorAndUserId(creator, userId);
+        Follow follow = followRepository.findByCreatorAndUserId(creator, userId).orElseThrow(RuntimeException::new);
         follow.setBlockStatus(false);
         followRepository.save(follow);
     }

@@ -75,7 +75,7 @@ public class UserService {
 
     public UserProfileImg getUserProfileImg(Long userId) {
         User user = userRepository.findWithProfileImgById(userId).orElseThrow(IllegalArgumentException::new);
-        return new UserProfileImg(user.getProfileImg().getUploadFileUrl());
+        return new UserProfileImg(user.getProfileImgUrl());
     }
 
     public void followCreator(User user, Long creatorId) {
