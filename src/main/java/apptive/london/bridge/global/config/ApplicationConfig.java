@@ -1,6 +1,6 @@
 package apptive.london.bridge.global.config;
 
-import apptive.london.bridge.domain.user.repositoy.UserRepository;
+import apptive.london.bridge.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
