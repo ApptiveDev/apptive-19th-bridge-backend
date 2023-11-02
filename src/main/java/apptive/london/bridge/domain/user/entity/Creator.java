@@ -32,20 +32,29 @@ public class Creator extends User {
         super();
     }
 
-    public static Creator fromUser(User user, String name, String gender, List<String> channelLinks, String businessEmail, Boolean callStatus) {
+    /**
+     * convert from user to creator
+     * @param user 전환될 유저
+     * @param name 크리에이터 이름
+     * @param gender 크리에이터 성별
+     * @param channelLinks 채널링크 string list
+     * @param businessEmail 비즈니스 이메일
+     * @return 크리에이터 객체
+     */
+    public static Creator fromUser(User user, String name, String gender, List<String> channelLinks, String businessEmail) {
         return Creator.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .nickname(user.getNickname())
                 .birthday(user.getBirthday())
-                .profileImg(user.getProfileImg())
                 .createdDate(user.getCreatedDate())
                 .role(Role.CREATOR)
                 .name(name)
                 .gender(gender)
                 .channelLinks(channelLinks)
                 .businessEmail(businessEmail)
-                .callStatus(callStatus)
+                .callStatus(false)
                 .build();
     }
 }

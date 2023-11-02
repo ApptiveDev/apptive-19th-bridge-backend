@@ -42,18 +42,17 @@ public class UserService {
         // email로 user 조회
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당하는 user가 존재하지 않습니다."));
 
+        // 이미 크리에이터인 사용자라면 예외처리
+        if (user instanceof Creator) {
+            throw new RuntimeException("이미 크리에이터인 유저입니다.");
+        }
+
         // user -> creator
-        Creator creator = Creator.builder()
-                .email(email)
-                .password(user.getPassword())
-                .nickname(modifyCreatorRequest.getNickname())
-                .birthday(modifyCreatorRequest.getBirthday())
-                .gender(modifyCreatorRequest.getGender())
-                .name(modifyCreatorRequest.getName())
-                .channelLinks(modifyCreatorRequest.getChannelLinks())
-                .businessEmail(modifyCreatorRequest.getBusinessEmail())
-                .role(Role.CREATOR)
-                .build();
+        Creator creator = Creator.fromUser(user,
+                modifyCreatorRequest.getName(),
+                modifyCreatorRequest.getGender(),
+                modifyCreatorRequest.getChannelLinks(),
+                modifyCreatorRequest.getBusinessEmail());
 
         // user 삭제
         userRepository.delete(user);
@@ -76,12 +75,18 @@ public class UserService {
 
     public UserProfileImg getUserProfileImg(Long userId) {
         User user = userRepository.findWithProfileImgById(userId).orElseThrow(IllegalArgumentException::new);
-        return new UserProfileImg(user.getProfileImg().getUploadFileUrl());
+        return new UserProfileImg(user.getProfileImgUrl());
     }
 
     public void followCreator(User user, Long creatorId) {
         // creatorId로 creator 조회
         Creator creator = creatorRepository.findById(creatorId).orElseThrow(() -> new IllegalArgumentException("해당하는 creator가 존재하지 않습니다."));
+
+        // TODO creator 조회할 때, 한번에 가져올 수 없을까?
+        // 이미 팔로우한 크리에이터라면 예외
+        if (followRepository.findByCreatorAndUserId(creator, user.getId()).isPresent()) {
+            throw new RuntimeException();
+        }
 
         // Follow 생성
         Follow follow = Follow.builder()
@@ -97,20 +102,26 @@ public class UserService {
         // creatorId로 creator 조회
         Creator creator = creatorRepository.findById(creatorId).orElseThrow(() -> new IllegalArgumentException("해당하는 creator가 존재하지 않습니다."));
 
-        Follow follow = followRepository.findByCreatorAndUserId(creator, user.getId());
+        Follow follow = followRepository.findByCreatorAndUserId(creator, user.getId()).orElseThrow(RuntimeException::new);
 
-        followRepository.delete(follow);
+        // 만약 차단되지 않았다면 팔로우 삭제
+        if (!follow.getBlockStatus()) {
+            followRepository.delete(follow);
+        }
     }
 
     public UserFollowListResponse getFollowList(User user) {
 
         List<Follow> follows = followRepository.findByUserWithCreatorAndProfileImg(user);
 
-        List<UserFollowListResponse.UserFollow> followList = follows.stream().map(follow ->
-                UserFollowListResponse.UserFollow.builder()
+        // 차단되지 않은 크리에이터 목록 조회
+        List<UserFollowListResponse.UserFollow> followList = follows.stream()
+                .filter(follow -> !follow.getBlockStatus())
+                .map(follow ->
+                        UserFollowListResponse.UserFollow.builder()
                         .creator_id(follow.getCreator().getId())
                         .creator_name(follow.getCreator().getNickname())
-                        .profile_img(follow.getCreator().getProfileImg().getUploadFileUrl())
+                        .profile_img(follow.getCreator().getProfileImgUrl())
                         .follower_count(followRepository.findByCreatorWithUserAndProfileImg(follow.getCreator()).size())
                         .call_status(follow.getCreator().getCallStatus())
                         .build()

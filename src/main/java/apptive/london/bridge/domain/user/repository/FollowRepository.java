@@ -8,10 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
-    Follow findByCreatorAndUserId(Creator creator, Long userId);
+    Optional<Follow> findByCreatorAndUserId(Creator creator, Long userId);
 
     @Query("SELECT f FROM Follow f JOIN FETCH f.creator c LEFT JOIN FETCH c.profileImg WHERE f.user = :user")
     List<Follow> findByUserWithCreatorAndProfileImg(@Param("user") User user);
