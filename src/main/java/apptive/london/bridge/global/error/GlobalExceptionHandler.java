@@ -25,4 +25,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getHttpStatus());
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handler(Exception e) {
+        return new ResponseEntity<>(new ErrorResponse("예기치 못한 서버 오류가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
