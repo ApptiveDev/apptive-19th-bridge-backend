@@ -42,18 +42,17 @@ public class UserService {
         // email로 user 조회
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당하는 user가 존재하지 않습니다."));
 
+        // 이미 크리에이터인 사용자라면 예외처리
+        if (user instanceof Creator) {
+            throw new RuntimeException("이미 크리에이터인 유저입니다.");
+        }
+
         // user -> creator
-        Creator creator = Creator.builder()
-                .email(email)
-                .password(user.getPassword())
-                .nickname(modifyCreatorRequest.getNickname())
-                .birthday(modifyCreatorRequest.getBirthday())
-                .gender(modifyCreatorRequest.getGender())
-                .name(modifyCreatorRequest.getName())
-                .channelLinks(modifyCreatorRequest.getChannelLinks())
-                .businessEmail(modifyCreatorRequest.getBusinessEmail())
-                .role(Role.CREATOR)
-                .build();
+        Creator creator = Creator.fromUser(user,
+                modifyCreatorRequest.getName(),
+                modifyCreatorRequest.getGender(),
+                modifyCreatorRequest.getChannelLinks(),
+                modifyCreatorRequest.getBusinessEmail());
 
         // user 삭제
         userRepository.delete(user);
