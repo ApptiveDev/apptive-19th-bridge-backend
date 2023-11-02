@@ -26,22 +26,22 @@ import java.util.List;
 public class User extends BaseEntity implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
-    private String nickname;
-    private String birthday;
+    protected String email;
+    protected String password;
+    protected String nickname;
+    protected LocalDate birthday;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    protected Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Token> tokens;
+    protected List<Token> tokens;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_img_id")
-    private ProfileImg profileImg;
+    protected ProfileImg profileImg;
 
     //============ UserDetail Method ============//
 

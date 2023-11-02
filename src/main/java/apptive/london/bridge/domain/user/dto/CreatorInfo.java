@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class CreatorInfo {
     private Long id;
     private String email;
     private String nickname;
-    private String birthday;
+    private LocalDate birthday;
     private String name;
     private String gender;
 
@@ -40,7 +41,7 @@ public class CreatorInfo {
                 .gender(creator.getGender())
                 .channelLinks(creator.getChannelLinks())
                 .businessEmail(creator.getBusinessEmail())
-                .profileImg(creator.getProfileImg().getUploadFileUrl())
+                .profileImg(creator.getProfileImgUrl())
                 .createdDate(creator.getCreatedDate())
                 .build();
     }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,7 +17,7 @@ public class UserInfo {
     private Long id;
     private String email;
     private String nickname;
-    private String birthday;
+    private LocalDate birthday;
     private String profile_img;
 
     public static UserInfo fromUser(User user) {
@@ -24,8 +26,7 @@ public class UserInfo {
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .birthday(user.getBirthday())
-                .profile_img(user.getProfileImg().getUploadFileUrl())
+                .profile_img(user.getProfileImgUrl())
                 .build();
-
     }
 }
