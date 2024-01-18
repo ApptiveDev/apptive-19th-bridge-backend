@@ -6,8 +6,10 @@ import apptive.london.bridge.domain.user.repository.CreatorRepository;
 import apptive.london.bridge.domain.user.repository.FollowRepository;
 import apptive.london.bridge.domain.user.repository.ProfileImgRepository;
 import apptive.london.bridge.domain.user.repository.UserRepository;
-import apptive.london.bridge.global.s3.AwsS3Uploader;
+import apptive.london.bridge.global.error.exception.CustomException;
+import apptive.london.bridge.global.third_party.s3.AwsS3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,8 +46,11 @@ public class UserService {
 
         // 이미 크리에이터인 사용자라면 예외처리
         if (user instanceof Creator) {
-            throw new RuntimeException("이미 크리에이터인 유저입니다.");
+            throw new CustomException("이미 크리에이터인 유저입니다.", HttpStatus.CONFLICT);
         }
+
+        // user 삭제
+        userRepository.delete(user);
 
         // user -> creator
         Creator creator = Creator.fromUser(user,
@@ -53,9 +58,6 @@ public class UserService {
                 modifyCreatorRequest.getGender(),
                 modifyCreatorRequest.getChannelLinks(),
                 modifyCreatorRequest.getBusinessEmail());
-
-        // user 삭제
-        userRepository.delete(user);
 
         // creator 저장
         creatorRepository.save(creator);
@@ -123,7 +125,6 @@ public class UserService {
                         .creator_name(follow.getCreator().getNickname())
                         .profile_img(follow.getCreator().getProfileImgUrl())
                         .follower_count(followRepository.findByCreatorWithUserAndProfileImg(follow.getCreator()).size())
-                        .call_status(follow.getCreator().getCallStatus())
                         .build()
         ).collect(Collectors.toList());
 

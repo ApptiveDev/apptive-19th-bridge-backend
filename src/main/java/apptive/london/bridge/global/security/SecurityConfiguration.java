@@ -55,10 +55,11 @@ public class SecurityConfiguration {
                                         "/swagger-ui.html",
                                         "/api/auth/**",
                                         "/api/oauth/**",
+                                        "/test/**",
                                         "/error").permitAll()
 
                                 .requestMatchers("/api/user/convert-to-creator/**").hasAnyRole(ADMIN.name())
-                                .requestMatchers("/api/creator").hasAnyRole(ADMIN.name(), CREATOR.name())
+                                .requestMatchers("/api/creator/**").hasAnyRole(ADMIN.name(), CREATOR.name())
                                 .anyRequest().authenticated()
                 )
 

@@ -2,8 +2,8 @@ package apptive.london.bridge.domain.user.entity;
 
 import apptive.london.bridge.global.auth.local.data.Token;
 import apptive.london.bridge.global.common.BaseEntity;
-import apptive.london.bridge.global.s3.AwsS3Uploader;
-import apptive.london.bridge.global.s3.FileInfo;
+import apptive.london.bridge.global.third_party.s3.AwsS3Uploader;
+import apptive.london.bridge.global.third_party.s3.FileInfo;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -29,7 +29,9 @@ public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     protected String email;
+
     protected String password;
     protected String nickname;
     protected LocalDate birthday;

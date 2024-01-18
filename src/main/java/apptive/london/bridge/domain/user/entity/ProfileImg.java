@@ -1,6 +1,6 @@
 package apptive.london.bridge.domain.user.entity;
 
-import apptive.london.bridge.global.s3.FileInfo;
+import apptive.london.bridge.global.third_party.s3.FileInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
