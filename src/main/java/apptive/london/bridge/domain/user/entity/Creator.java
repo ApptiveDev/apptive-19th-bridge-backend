@@ -18,15 +18,11 @@ public class Creator extends User {
     private String name;
     private String gender;
 
-
     @ElementCollection
     @Builder.Default
     private List<String> channelLinks = new ArrayList<>();
 
     private String businessEmail;
-
-    @Builder.Default
-    private Boolean callStatus = false;
 
     public Creator() {
         super();
@@ -54,7 +50,6 @@ public class Creator extends User {
                 .gender(gender)
                 .channelLinks(channelLinks)
                 .businessEmail(businessEmail)
-                .callStatus(false)
                 .build();
     }
 }
