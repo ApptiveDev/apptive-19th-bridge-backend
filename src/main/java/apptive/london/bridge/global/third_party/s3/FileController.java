@@ -1,4 +1,4 @@
-package apptive.london.bridge.global.s3;
+package apptive.london.bridge.global.third_party.s3;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

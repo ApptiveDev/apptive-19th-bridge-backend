@@ -1,4 +1,4 @@
-package apptive.london.bridge.global.s3;
+package apptive.london.bridge.global.third_party.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
