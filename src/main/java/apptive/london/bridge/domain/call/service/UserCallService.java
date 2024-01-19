@@ -4,6 +4,7 @@ import apptive.london.bridge.domain.call.entity.Call;
 import apptive.london.bridge.domain.call.entity.CallRequest;
 import apptive.london.bridge.domain.call.repository.CallRepository;
 import apptive.london.bridge.domain.call.repository.CallRequestRepository;
+import apptive.london.bridge.domain.user.entity.Creator;
 import apptive.london.bridge.domain.user.entity.User;
 import apptive.london.bridge.domain.call.sse.CallSseEmitters;
 import apptive.london.bridge.global.error.exception.CustomException;
@@ -55,5 +56,13 @@ public class UserCallService {
 
         callRequestRepository.deleteByUser(user);
         callSseEmitters.removeFanEmitter(user, callRequest.getCall().getCreator().getId());
+    }
+
+    public SseEmitter keepWait(User user) {
+        CallRequest callRequest = callRequestRepository.findByUser(user).orElseThrow(() -> new CustomException("전화 신청하지 않은 사용자입니다.", HttpStatus.NOT_FOUND));
+        Call call = callRequest.getCall();
+        Creator creator = call.getCreator();
+
+        return callSseEmitters.getCallSseEmitter(user, creator);
     }
 }

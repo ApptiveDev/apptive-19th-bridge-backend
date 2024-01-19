@@ -62,6 +62,20 @@ public class CallSseEmitters {
         return emitter;
     }
 
+    public SseEmitter getCallSseEmitter(User user, Creator creator) {
+        SseEmitter emitter = new SseEmitter(60L * 1000 * 60);
+
+        // Emitter를 map에 저장하기
+        fansWaitEmitters.get(creator.getId()).put(user.getId(), emitter);
+
+        emitter.onCompletion(() -> creatorEmitters.remove(creator.getId()));
+        emitter.onTimeout(emitter::complete);
+
+        sendConnectedMessage(emitter);
+
+        return emitter;
+    }
+
     /**
      * 팬을 전화대기풀에 등록하고 결과를 받을 sseEmitter를 반환한다.
      * @param creatorId 대기중인 전화의 상대인 크리에이터 id

@@ -23,6 +23,11 @@ public class UserCallController {
         return ResponseEntity.ok(sseEmitter);
     }
 
+    @GetMapping("/keep")
+    public ResponseEntity<SseEmitter> keepWait(@AuthenticationPrincipal User user) {
+        SseEmitter sseEmitter = userCallService.keepWait(user);
+        return ResponseEntity.ok(sseEmitter);
+    }
 
     @DeleteMapping("/cancel")
     public ResponseEntity<?> cancelCallRequest(@AuthenticationPrincipal User user) {
