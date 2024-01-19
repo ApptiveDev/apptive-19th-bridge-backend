@@ -34,7 +34,6 @@ public class CreatorCallService {
      * @return
      */
     public SseEmitter startCall(Creator creator, CreatorCallConfig creatorCallConfig) {
-
         // 이전 Call가 존재한다면 삭제
         Optional<Call> beforeCall = callRepository.findByCreator(creator);
 
@@ -80,6 +79,9 @@ public class CreatorCallService {
 
             // 당첨된 팬의 전화신청 엔티티 삭제
             callRequestRepository.delete(randomCallRequest);
+        } else {
+            call.setFan(null);
+            callRepository.save(call);
         }
 
         return emitter;
