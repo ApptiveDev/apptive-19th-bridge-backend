@@ -15,6 +15,7 @@ import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,7 @@ public class CreatorService {
         creatorRepository.save(creator);
     }
 
+    @Transactional(readOnly = true)
     public CreatorFollowerListResponse getFollowerList(User user) {
         Creator creator = creatorRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없습니다."));
 
@@ -61,6 +63,7 @@ public class CreatorService {
         return new CreatorFollowerListResponse(followerList);
     }
 
+    @Transactional(readOnly = true)
     public CreatorFollowerListResponse getNonBlockFollowerList(User user) {
         Creator creator = creatorRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없습니다."));
 
@@ -77,6 +80,7 @@ public class CreatorService {
         return new CreatorFollowerListResponse(nonBlockFollowerList);
     }
 
+    @Transactional(readOnly = true)
     public CreatorFollowerListResponse getBlockFollowerList(User user) {
         Creator creator = creatorRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없습니다."));
 
@@ -103,5 +107,12 @@ public class CreatorService {
         Follow follow = followRepository.findByCreatorAndUserId(creator, userId).orElseThrow(RuntimeException::new);
         follow.setBlockStatus(false);
         followRepository.save(follow);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CreatorInfo> getCreatorList() {
+        List<Creator> creators = creatorRepository.findAllWithChannelLink();
+
+        return creators.stream().map(CreatorInfo::fromCreator).collect(Collectors.toList());
     }
 }

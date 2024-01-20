@@ -2,6 +2,7 @@ package apptive.london.bridge.domain.user.controller;
 
 import apptive.london.bridge.domain.user.dto.*;
 import apptive.london.bridge.domain.user.entity.User;
+import apptive.london.bridge.domain.user.service.CreatorService;
 import apptive.london.bridge.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -17,6 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final CreatorService creatorService;
 
     @GetMapping("/myInfo/v1")
     public ResponseEntity<UserInfo> getMyInfo(@AuthenticationPrincipal User user) {
@@ -67,5 +70,11 @@ public class UserController {
     public ResponseEntity<UserFollowListResponse> getFollowList(@AuthenticationPrincipal User user) {
         UserFollowListResponse userFollowList = userService.getFollowList(user);
         return ResponseEntity.ok(userFollowList);
+    }
+
+    @GetMapping("/creator-list")
+    public ResponseEntity<List<CreatorInfo>> getCreatorList() {
+        List<CreatorInfo> creatorInfoList = creatorService.getCreatorList();
+        return ResponseEntity.ok(creatorInfoList);
     }
 }
